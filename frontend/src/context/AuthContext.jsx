@@ -8,6 +8,23 @@ const api = axios.create({
   timeout: 10000,
 });
 
+api.interceptors.request.use(config => {
+  return config;
+});
+
+api.interceptors.response.use(
+  response => response,
+  error => {
+    console.error('API Error:', error.response?.status, error.response?.data || error.message);
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      localStorage.removeItem('admin_token');
+      localStorage.removeItem('admin_user');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
