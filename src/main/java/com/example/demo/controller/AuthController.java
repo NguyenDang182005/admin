@@ -63,6 +63,42 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/social-login")
+    public ResponseEntity<?> socialLogin(@RequestBody com.example.demo.dto.SocialLoginRequest request) {
+        try {
+            String email = request.getEmail();
+            String fullName = request.getName();
+
+            if (email == null || email.isEmpty()) {
+                return ResponseEntity.status(401).body(Map.of("message", "Email not found from provider"));
+            }
+
+            Optional<User> userOpt = userRepository.findByEmail(email);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(403).body(Map.of("message", "Account not found. Please contact super admin."));
+            }
+
+            User user = userOpt.get();
+            // CHẶN: Chỉ cho phép người dùng có Role ADMIN truy cập trang quản trị
+            if (!"ADMIN".equalsIgnoreCase(user.getRole())) {
+                return ResponseEntity.status(403).body(Map.of("message", "Unauthorized access. This account is not an ADMIN."));
+            }
+
+            String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+            AuthResponse response = new AuthResponse(
+                    token,
+                    user.getEmail(),
+                    user.getRole(),
+                    user.getFullName(),
+                    user.getId()
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("message", "Server error: " + e.getMessage()));
+        }
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {

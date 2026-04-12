@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Tag, Space, Input, Select, Modal, message, Card, Typography, Popconfirm, Avatar } from 'antd';
+import { Table, Button, Tag, Space, Input, Select, Modal, message, Typography, Popconfirm, Avatar } from 'antd';
 import { SearchOutlined, DeleteOutlined, EditOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
+import dayjs from 'dayjs';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const { Option } = Select;
 
 const roleColors = {
@@ -35,6 +36,7 @@ export default function Users() {
       params.append('page', page - 1);
       params.append('size', size);
       if (filters.role) params.append('role', filters.role);
+      if (filters.search) params.append('search', filters.search);
 
       const response = await api.get(`/users?${params.toString()}`);
       setUsers(response.data.content);
@@ -44,7 +46,7 @@ export default function Users() {
         total: response.data.totalElements,
       });
     } catch (error) {
-      message.error('Failed to load users');
+      message.error('Không thể tải danh sách người dùng');
     } finally {
       setLoading(false);
     }
@@ -61,20 +63,20 @@ export default function Users() {
   const handleRoleChange = async (userId, newRole) => {
     try {
       await api.put(`/users/${userId}`, { role: newRole });
-      message.success('Role updated successfully');
+      message.success('Cập nhật vai trò thành công');
       fetchUsers(pagination.current, pagination.pageSize);
     } catch (error) {
-      message.error('Failed to update role');
+      message.error('Lỗi khi cập nhật vai trò');
     }
   };
 
   const handleDelete = async (userId) => {
     try {
       await api.delete(`/users/${userId}`);
-      message.success('User deleted successfully');
+      message.success('Đã xóa người dùng');
       fetchUsers(pagination.current, pagination.pageSize);
     } catch (error) {
-      message.error('Failed to delete user');
+      message.error('Lỗi khi xóa người dùng');
     }
   };
 
@@ -87,75 +89,84 @@ export default function Users() {
   const handleEditSave = async () => {
     try {
       await api.put(`/users/${selectedUser.id}`, editForm);
-      message.success('User updated successfully');
+      message.success('Cập nhật thông tin thành công');
       setEditVisible(false);
       fetchUsers(pagination.current, pagination.pageSize);
     } catch (error) {
-      message.error('Failed to update user');
+      message.error('Lỗi khi cập nhật thông tin');
     }
   };
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 70,
-    },
-    {
-      title: 'Người dùng',
+      title: 'NGƯỜI DÙNG',
       dataIndex: 'fullName',
       key: 'fullName',
       render: (text, record) => (
-        <Space>
-          <Avatar icon={<UserOutlined />} style={{ backgroundColor: '#6366f1' }} />
-          <div>
-            <div>{text || '-'}</div>
-            <div style={{ fontSize: 12, color: '#888' }}>{record.email}</div>
+        <Space size={12}>
+          <Avatar 
+            size={40} 
+            src={record.avatar} 
+            icon={<UserOutlined />} 
+            style={{ backgroundColor: '#006ce4', border: '2px solid #fff', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }} 
+          />
+          <div className="flex flex-col">
+            <Text strong className="text-gray-900 leading-tight">{text || 'N/A'}</Text>
+            <Text className="text-xs text-gray-400 font-medium lowercase">#{record.id} • {record.email}</Text>
           </div>
         </Space>
       ),
     },
     {
-      title: 'Số điện thoại',
+      title: 'LIÊN HỆ',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
-      render: (phone) => phone || '-',
+      render: (phone) => <Text className="font-medium text-gray-500">{phone || '-'}</Text>,
     },
     {
-      title: 'Vai trò',
+      title: 'VAI TRÒ',
       dataIndex: 'role',
       key: 'role',
       render: (role, record) => (
         <Select
+          variant="borderless"
           value={role}
           style={{ width: 140 }}
+          className={`rounded-lg font-bold ${
+            role === 'ADMIN' ? 'bg-red-50 text-red-600' :
+            role === 'OWNER' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'
+          }`}
           onChange={(value) => handleRoleChange(record.id, value)}
           onClick={(e) => e.stopPropagation()}
         >
-          <Option value="ADMIN"><Tag color="red">ADMIN</Tag></Option>
-          <Option value="OWNER"><Tag color="blue">OWNER</Tag></Option>
-          <Option value="CUSTOMER"><Tag color="green">CUSTOMER</Tag></Option>
+          <Option value="ADMIN">ADMIN</Option>
+          <Option value="OWNER">OWNER</Option>
+          <Option value="CUSTOMER">CUSTOMER</Option>
         </Select>
       ),
     },
     {
-      title: 'Ngày tạo',
+      title: 'NGÀY THAM GIA',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (date) => date ? new Date(date).toLocaleDateString('vi-VN') : '-',
+      render: (date) => (
+        <div className="text-xs text-gray-500 font-bold">
+            {date ? dayjs(date).format('DD/MM/YYYY') : '-'}
+        </div>
+      ),
     },
     {
-      title: 'Thao tác',
+      title: 'THAO TÁC',
       key: 'action',
+      width: 120,
       render: (_, record) => (
         <Space>
-          <Button type="text" icon={<EditOutlined />} onClick={() => openEdit(record)} />
+          <Button type="text" icon={<EditOutlined className="text-gray-400 hover:text-blue-500" />} onClick={() => openEdit(record)} />
           <Popconfirm
-            title="Delete this user?"
+            title="Xóa người dùng này?"
             onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
+            okText="Xóa"
+            cancelText="Hủy"
           >
             <Button type="text" danger icon={<DeleteOutlined />} />
           </Popconfirm>
@@ -165,15 +176,19 @@ export default function Users() {
   ];
 
   return (
-    <div>
-      <Card style={{ borderRadius: 8, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', border: '1px solid #e5e7eb' }}>
-        <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
-          <Title level={4} style={{ margin: 0 }}>Quản lý người dùng</Title>
-          <Space>
+    <div className="space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <Title level={2} style={{ margin: 0, fontWeight: 800 }}>Quản lý người dùng</Title>
+            <Text type="secondary">Quản lý và cấp quyền truy cập cho hành khách và chủ nhà</Text>
+          </div>
+          
+          <div className="flex gap-3 w-full md:w-auto">
             <Select
-              placeholder="Lọc theo vai trò"
-              style={{ width: 150 }}
+              placeholder="Lọc vai trò"
+              style={{ width: 160 }}
               allowClear
+              className="rounded-xl"
               value={filters.role || undefined}
               onChange={(value) => setFilters({ ...filters, role: value || '' })}
             >
@@ -182,14 +197,15 @@ export default function Users() {
               <Option value="CUSTOMER">CUSTOMER</Option>
             </Select>
             <Input
-              placeholder="Search..."
-              prefix={<SearchOutlined />}
-              style={{ width: 200 }}
+              placeholder="Tìm theo tên, email..."
+              prefix={<SearchOutlined className="text-gray-400" />}
+              className="rounded-xl w-full md:w-64"
               onChange={(e) => setFilters({ ...filters, search: e.target.value })}
             />
-          </Space>
-        </div>
+          </div>
+      </div>
 
+      <div className="admin-table-container shadow-sm border border-gray-100">
         <Table
           columns={columns}
           dataSource={users}
@@ -197,37 +213,53 @@ export default function Users() {
           loading={loading}
           pagination={pagination}
           onChange={handleTableChange}
+          className="user-table"
         />
-      </Card>
+      </div>
 
       <Modal
-        title="Chỉnh sửa người dùng"
+        title={
+            <div className="pb-4 border-b border-gray-100 mb-6">
+                <Title level={4} style={{ margin: 0 }}>Cập nhật Người dùng</Title>
+            </div>
+        }
         open={editVisible}
         onCancel={() => setEditVisible(false)}
         onOk={handleEditSave}
-        okText="Lưu"
+        okText="Cập nhật ngay"
+        cancelText="Bỏ qua"
+        className="rounded-2xl overflow-hidden"
+        okButtonProps={{ 
+            style: { background: '#006ce4', height: 40, borderRadius: 8, fontWeight: 700 } 
+        }}
       >
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <div>
-            <label>Họ tên:</label>
+        <div className="space-y-6 py-2">
+          <div className="space-y-2">
+            <Text strong className="text-xs uppercase tracking-widest text-gray-400">HỌ VÀ TÊN</Text>
             <Input 
+              size="large"
+              placeholder="Nhập họ tên mới"
+              className="rounded-xl border-gray-200"
               value={editForm.fullName} 
               onChange={(e) => setEditForm({...editForm, fullName: e.target.value})} 
             />
           </div>
-          <div>
-            <label>Vai trò:</label>
+          
+          <div className="space-y-2">
+            <Text strong className="text-xs uppercase tracking-widest text-gray-400">QUYỀN TRUY CẬP</Text>
             <Select 
+              size="large"
               value={editForm.role} 
               onChange={(value) => setEditForm({...editForm, role: value})}
-              style={{ width: '100%' }}
+              className="w-full"
+              dropdownClassName="rounded-xl"
             >
               <Option value="ADMIN">ADMIN</Option>
               <Option value="OWNER">OWNER</Option>
               <Option value="CUSTOMER">CUSTOMER</Option>
             </Select>
           </div>
-        </Space>
+        </div>
       </Modal>
     </div>
   );

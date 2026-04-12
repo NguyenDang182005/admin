@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Skeleton, Box, Typography } from '@mui/material';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line } from 'recharts';
+import { Skeleton, Typography } from 'antd';
 import StatCard from '../components/StatCard';
 import { statsAPI } from '../services/api';
-import { useAuth } from '../context/AuthContext';
 
-const COLORS = ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+const { Title, Text } = Typography;
+
+const COLORS = ['#006ce4', '#003580', '#febb02', '#22c55e', '#ef4444', '#8b5cf6'];
 
 const BOOKING_TYPE_LABELS = {
   HOTEL: '🏨 Khách sạn',
@@ -16,27 +17,25 @@ const BOOKING_TYPE_LABELS = {
   COMBO: '📦 Combo',
 };
 
-const formatVND = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(val);
+const formatVND = (val) => new Intl.NumberFormat('vi-VN', { 
+    style: 'currency', 
+    currency: 'VND', 
+    maximumFractionDigits: 0 
+}).format(val);
 
 const Dashboard = () => {
   const [overview, setOverview] = useState(null);
   const [revenueData, setRevenueData] = useState([]);
   const [revenueTrend, setRevenueTrend] = useState([]);
-  const [bookingsTrend, setBookingsTrend] = useState([]);
-  const [confirmedTrend, setConfirmedTrend] = useState([]);
-  const [usersTrend, setUsersTrend] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [overviewRes, revenueRes, revTrendRes, bookTrendRes, confTrendRes, userTrendRes] = await Promise.all([
+        const [overviewRes, revenueRes, revTrendRes] = await Promise.all([
           statsAPI.getOverview(),
           statsAPI.getRevenueByCategory(),
           statsAPI.getRevenueTrend(),
-          statsAPI.getBookingsTrend(),
-          statsAPI.getConfirmedTrend(),
-          statsAPI.getUsersTrend(),
         ]);
         setOverview(overviewRes.data);
         const labeled = revenueRes.data.map(d => ({
@@ -45,25 +44,23 @@ const Dashboard = () => {
         }));
         setRevenueData(labeled);
         setRevenueTrend(revTrendRes.data);
-        setBookingsTrend(bookTrendRes.data);
-        setConfirmedTrend(confTrendRes.data);
-        setUsersTrend(userTrendRes.data);
       } catch (err) {
-        // Use mock data if backend not running
-        setOverview({ totalBookings: 30, totalRevenue: 97650000, totalUsers: 20, bookingsByStatus: { CONFIRMED: 15, COMPLETED: 12, PENDING: 2, CANCELLED: 1 } });
+        // Mock data
+        setOverview({ 
+            totalBookings: 128, 
+            totalRevenue: 245000000, 
+            totalUsers: 85, 
+            bookingsByStatus: { CONFIRMED: 45, COMPLETED: 72, PENDING: 8, CANCELLED: 3 } 
+        });
         setRevenueData([
-          { name: '🏨 Khách sạn', value: 46500000 },
-          { name: '✈️ Máy bay', value: 14800000 },
-          { name: '🚗 Thuê xe', value: 18350000 },
-          { name: '🎢 Tham quan', value: 6480000 },
-          { name: '🚕 Taxi', value: 2450000 },
+          { name: '🏨 Khách sạn', value: 125000000 },
+          { name: '✈️ Máy bay', value: 65000000 },
+          { name: '🚗 Thuê xe', value: 35000000 },
+          { name: '🎢 Tham quan', value: 15000000 },
+          { name: '🚕 Taxi', value: 5000000 },
         ]);
-        // Mock data for trends
-        const dates = ['03-25', '03-26', '03-27', '03-28', '03-29', '03-30', '03-31'];
-        setRevenueTrend(dates.map(d => ({ date: `2026-${d}`, revenue: Math.random() * 50000000 })));
-        setBookingsTrend(dates.map(d => ({ date: `2026-${d}`, count: Math.floor(Math.random() * 20) + 10 })));
-        setConfirmedTrend(dates.map(d => ({ date: `2026-${d}`, count: Math.floor(Math.random() * 15) + 5 })));
-        setUsersTrend(dates.map(d => ({ date: `2026-${d}`, count: Math.floor(Math.random() * 5) + 2 })));
+        const dates = ['04-06', '04-07', '04-08', '04-09', '04-10', '04-11', '04-12'];
+        setRevenueTrend(dates.map(d => ({ date: `2026-${d}`, revenue: Math.random() * 80000000 + 20000000 })));
       } finally {
         setLoading(false);
       }
@@ -73,11 +70,12 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <Grid container spacing={3}>
-        {[1, 2, 3, 4].map(i => <Grid item xs={12} sm={6} md={3} key={i}><Skeleton variant="rounded" height={120} /></Grid>)}
-        <Grid item xs={12} md={6}><Skeleton variant="rounded" height={380} /></Grid>
-        <Grid item xs={12} md={6}><Skeleton variant="rounded" height={380} /></Grid>
-      </Grid>
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map(i => <Skeleton key={i} active avatar paragraph={{ rows: 2 }} className="bg-white p-6 rounded-xl" />)}
+        </div>
+        <Skeleton active paragraph={{ rows: 8 }} className="bg-white p-8 rounded-xl" />
+      </div>
     );
   }
 
@@ -86,132 +84,112 @@ const Dashboard = () => {
     : [];
 
   return (
-    <Box>
-      <Typography variant="h5" fontWeight={700} color="text.primary" mb={3}>
-        📊 Tổng quan hệ thống
-      </Typography>
+    <div className="space-y-8">
+      <div>
+        <Title level={2} style={{ margin: 0, fontWeight: 800 }}>Bảng điều khiển</Title>
+        <Text type="secondary">Phân tích chuyên sâu về hiệu suất kinh doanh của bạn</Text>
+      </div>
 
       {/* Stat Cards */}
-      <Grid container spacing={3} mb={4}>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard title="Tổng đặt chỗ" value={overview?.totalBookings ?? 0} icon="🎫" color="#6366f1" subtitle="Tất cả dịch vụ" />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard title="Doanh thu" value={formatVND(overview?.totalRevenue ?? 0)} icon="💰" color="#10b981" subtitle="Tổng cộng" />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard title="Người dùng" value={overview?.totalUsers ?? 0} icon="👥" color="#06b6d4" subtitle="Đã đăng ký" />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Đã xác nhận"
-            value={overview?.bookingsByStatus?.CONFIRMED ?? 0}
-            icon="✅"
-            color="#008234"
-            subtitle="Đang chờ thực hiện"
-          />
-        </Grid>
-      </Grid>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard title="Tổng đơn đặt" value={overview?.totalBookings ?? 0} icon="🎫" color="#006ce4" subtitle="Lượt đặt chỗ" />
+        <StatCard title="Tổng doanh thu" value={formatVND(overview?.totalRevenue ?? 0)} icon="💰" color="#22c55e" subtitle="Thanh toán thành công" />
+        <StatCard title="Người dùng" value={overview?.totalUsers ?? 0} icon="👥" color="#003580" subtitle="Thành viên đăng ký" />
+        <StatCard title="Chờ xử lý" value={overview?.bookingsByStatus?.PENDING ?? 0} icon="⏳" color="#febb02" subtitle="Cần xác nhận ngay" />
+      </div>
 
-      {/* Charts */}
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={5}>
-          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
-            <Typography variant="subtitle1" fontWeight={700} mb={2}>Doanh thu theo dịch vụ</Typography>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie data={revenueData} cx="50%" cy="45%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}>
-                  {revenueData.map((_, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(val) => formatVND(val)} />
-                <Legend wrapperStyle={{ fontSize: '13px', paddingTop: '20px' }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </Box>
-        </Grid>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Main Revenue Chart */}
+        <div className="lg:col-span-8 admin-card">
+            <div className="flex justify-between items-center mb-6">
+                <Title level={4} style={{ margin: 0 }}>Xu hướng doanh thu</Title>
+                <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-[#006ce4]"></span>
+                    <Text className="text-xs font-bold text-gray-400">7 NGÀY QUA</Text>
+                </div>
+            </div>
+            <div className="h-[350px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={revenueTrend} margin={{ top: 10, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <XAxis 
+                    dataKey="date" 
+                    tickFormatter={(str) => str.split('-').slice(1).reverse().join('/')} 
+                    tick={{ fontSize: 12, fontWeight: 500, fill: '#9ca3af' }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis 
+                    tick={{ fontSize: 11, fontWeight: 500, fill: '#9ca3af' }} 
+                    tickFormatter={(val) => val >= 1000000 ? `${(val/1000000).toFixed(0)}tr` : val}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                    formatter={(val) => formatVND(val)} 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="revenue" 
+                    name="Doanh thu" 
+                    stroke="#006ce4" 
+                    strokeWidth={4} 
+                    dot={{ r: 4, strokeWidth: 2, fill: '#fff' }} 
+                    activeDot={{ r: 6, strokeWidth: 0 }} 
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+        </div>
 
-        <Grid item xs={12} md={7}>
-          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
-            <Typography variant="subtitle1" fontWeight={700} mb={2}>Trạng thái đặt chỗ</Typography>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={statusData} margin={{ top: 5, right: 30, left: -20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Bar dataKey="value" name="Số lượng" radius={[4, 4, 0, 0]}>
-                  {statusData.map((_, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </Box>
-        </Grid>
+        {/* Pie Chart */}
+        <div className="lg:col-span-4 admin-card">
+            <Title level={4} className="mb-6">Cơ cấu danh mục</Title>
+            <div className="h-[350px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie 
+                    data={revenueData} 
+                    cx="50%" 
+                    cy="45%" 
+                    innerRadius={60}
+                    outerRadius={90} 
+                    dataKey="value" 
+                    paddingAngle={5}
+                  >
+                    {revenueData.map((_, index) => (
+                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(val) => formatVND(val)} />
+                  <Legend verticalAlign="bottom" height={36} iconType="circle" />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+        </div>
 
-        <Grid item xs={12}>
-          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
-            <Typography variant="subtitle1" fontWeight={700} mb={2}>📈 Xu hướng doanh thu (7 ngày qua)</Typography>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={revenueTrend} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="date" tickFormatter={(str) => str.split('-').slice(1).reverse().join('/')} tick={{ fontSize: 11 }} />
-                <YAxis width={40} tick={{ fontSize: 11 }} tickFormatter={(val) => val >= 1000000 ? `${val/1000000}M` : val} />
-                <Tooltip formatter={(val) => formatVND(val)} />
-                <Line type="monotone" dataKey="revenue" name="Doanh thu" stroke="#6366f1" strokeWidth={3} dot={{ r: 4, strokeWidth: 2, fill: '#fff' }} activeDot={{ r: 6 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
-            <Typography variant="subtitle2" fontWeight={700} mb={2}>🎫 Xu hướng đặt chỗ</Typography>
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={bookingsTrend} margin={{ top: 5, right: 10, left: -25, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="date" tickFormatter={(str) => str.split('-')[2]} tick={{ fontSize: 11 }} />
-                <YAxis width={40} tick={{ fontSize: 11 }} />
-                <Tooltip />
-                <Line type="step" dataKey="count" name="Số đơn" stroke="#8b5cf6" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
-            <Typography variant="subtitle2" fontWeight={700} mb={2}>✅ Đơn thành công</Typography>
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={confirmedTrend} margin={{ top: 5, right: 10, left: -25, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="date" tickFormatter={(str) => str.split('-')[2]} tick={{ fontSize: 11 }} />
-                <YAxis width={40} tick={{ fontSize: 11 }} />
-                <Tooltip />
-                <Line type="monotone" dataKey="count" name="Số đơn" stroke="#10b981" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
-            <Typography variant="subtitle2" fontWeight={700} mb={2}>👥 Người dùng mới</Typography>
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={usersTrend} margin={{ top: 5, right: 10, left: -25, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="date" tickFormatter={(str) => str.split('-')[2]} tick={{ fontSize: 11 }} />
-                <YAxis width={40} tick={{ fontSize: 11 }} />
-                <Tooltip />
-                <Line type="monotone" dataKey="count" name="Số người" stroke="#06b6d4" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </Box>
-        </Grid>
-      </Grid>
-    </Box>
+        {/* Bar Chart */}
+        <div className="lg:col-span-12 admin-card">
+            <Title level={4} className="mb-6">Trạng thái đặt lịch</Title>
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={statusData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} />
+                  <YAxis axisLine={false} tickLine={false} />
+                  <Tooltip cursor={{ fill: '#f7f8fa' }} />
+                  <Bar dataKey="value" name="Số lượng" radius={[8, 8, 0, 0]} barSize={40}>
+                    {statusData.map((_, index) => (
+                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

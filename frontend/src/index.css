@@ -2,92 +2,53 @@
 @config "../tailwind.config.js";
 @import "@radix-ui/themes/styles.css";
 
-/* Custom Reset or Booking.com styles can go here */
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background-color: #f2f2f2;
-  color: #1a1a1a;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  :root {
+    --booking-navy: #003580;
+    --booking-blue: #006ce4;
+    --booking-yellow: #febb02;
+    --bg-gray: #f2f2f2;
+    --text-primary: #1a1a1a;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-gray);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
 }
 
-/* Global Search UI Standardisation */
-.search-banner {
-  @apply w-full bg-[#003b95] text-white py-16 px-4;
+@layer components {
+  /* Sidebar styles */
+  .admin-sidebar {
+    @apply bg-[#003580] min-h-screen text-white;
+  }
+
+  /* Stat cards */
+  .admin-card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6;
+  }
+
+  /* Table styling */
+  .admin-table-container {
+    @apply bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden;
+  }
 }
 
-.section-container {
-  @apply max-w-6xl mx-auto px-4;
+/* Ant Design Overrides to match Inter font */
+.ant-layout, .ant-menu, .ant-btn, .ant-input, .ant-table, .ant-typography {
+  font-family: 'Inter', sans-serif !important;
 }
 
-.search-box-container {
-  @apply max-w-6xl mx-auto -mt-10 px-4;
+/* Custom Scrollbar for Navy Sidebar */
+::-webkit-scrollbar {
+  width: 6px;
 }
-
-.search-box {
-  @apply bg-white p-6 rounded-xl shadow-2xl border border-gray-100 flex flex-col gap-4;
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
 }
-
-.result-card {
-  @apply bg-white p-6 rounded-lg shadow-md border border-gray-200 transition-shadow hover:shadow-lg;
-}
-
-.btn-booking {
-  @apply bg-[#006ce4] text-white font-bold px-6 py-2.5 rounded-md hover:bg-[#003b95] transition-colors;
-}
-
-/* Chống vỡ chữ và thanh dọc | cho bộ chọn Ant Design */
-.ant-select, 
-.ant-select-selection-item, 
-.ant-select-selection-placeholder,
-.ant-select-item-option-content,
-.ant-picker,
-.ant-picker-input > input,
-.ant-input,
-.ant-input-number-input,
-.ant-select-dropdown,
-.ant-select-dropdown * {
-  font-family: "Segoe UI", Tahoma, Arial, sans-serif !important;
-  letter-spacing: normal !important;
-  text-transform: none !important;
-  font-variant: normal !important;
-  text-rendering: auto !important;
-  font-feature-settings: "tnum", "tnum" !important;
-}
-
-.ant-select-selection-item, 
-.ant-select-selection-placeholder,
-.ant-picker-input > input {
-  @apply truncate! max-w-full! block!;
-}
-
-/* Fix flex containers from blowing out their bounds */
-.flex-col.w-full,
-.grid > div.flex {
-  min-width: 0;
-  overflow: hidden;
-}
-
-.ant-select-selector {
-  min-width: 0 !important;
-}
-
-.ant-picker-input > input {
-  @apply text-sm! md:text-base!;
-}
-
-.ant-select-selection-placeholder,
-.ant-picker-placeholder,
-::placeholder,
-.ant-input::placeholder {
-  font-family: "Segoe UI", Tahoma, Arial, sans-serif !important;
-  letter-spacing: normal !important;
-  text-transform: none !important;
-  font-variant: normal !important;
-  font-weight: 400 !important;
-  opacity: 1;
-}
-
-.custom-home-autocomplete .ant-select-selector {
-  @apply px-0!;
-}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

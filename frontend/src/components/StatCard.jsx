@@ -1,41 +1,37 @@
 import React from 'react';
-import { Card, CardContent, Typography, Box } from '@mui/material';
 
-const StatCard = ({ title, value, icon, color = '#6366f1', subtitle }) => {
+const StatCard = ({ title, value, icon, color = '#006ce4', subtitle }) => {
   return (
-    <Card elevation={0} sx={{
-      borderRadius: '12px',
-      border: '1px solid #f0f0f0',
-      transition: 'box-shadow 0.2s',
-      '&:hover': { boxShadow: '0 8px 32px rgba(0,0,0,0.10)' }
-    }}>
-      <CardContent sx={{ p: 3 }}>
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Box>
-            <Typography variant="body2" color="text.secondary" fontWeight={500} gutterBottom>
-              {title}
-            </Typography>
-            <Typography variant="h4" fontWeight={700} color="text.primary">
-              {value}
-            </Typography>
-            {subtitle && (
-              <Typography variant="caption" color="text.secondary" mt={0.5}>
-                {subtitle}
-              </Typography>
-            )}
-          </Box>
-          <Box sx={{
-            width: 56, height: 56,
-            borderRadius: 2,
-            backgroundColor: `${color}18`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 28,
-          }}>
-            {icon}
-          </Box>
-        </Box>
-      </CardContent>
-    </Card>
+    <div className="admin-card group hover:scale-[1.02] transition-all duration-300 cursor-default">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+            {title}
+          </p>
+          <h3 className="text-2xl font-black text-[#1a1a1a] tracking-tight">
+            {value}
+          </h3>
+          {subtitle && (
+            <p className="text-xs text-gray-400 mt-1 font-medium">
+              {subtitle}
+            </p>
+          )}
+        </div>
+        
+        <div 
+          className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm transition-transform group-hover:rotate-12"
+          style={{ backgroundColor: `${color}12`, color: color }}
+        >
+          {icon}
+        </div>
+      </div>
+      
+      {/* Subtle bottom accent line */}
+      <div 
+        className="absolute bottom-0 left-6 right-6 h-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+        style={{ backgroundColor: color }}
+      ></div>
+    </div>
   );
 };
 

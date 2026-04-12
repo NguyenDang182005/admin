@@ -45,16 +45,23 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
-    const response = await api.post('/auth/login', { email, password });
-    const { token, email: userEmail, role, fullName, userId } = response.data;
-    
+  const handleLoginSuccess = (data) => {
+    const { token, email: userEmail, role, fullName, userId } = data;
     localStorage.setItem('admin_token', token);
     localStorage.setItem('admin_user', JSON.stringify({ email: userEmail, role, fullName, userId }));
-    
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     setUser({ email: userEmail, role, fullName, userId });
-    
+  };
+
+  const login = async (email, password) => {
+    const response = await api.post('/auth/login', { email, password });
+    handleLoginSuccess(response.data);
+    return response.data;
+  };
+
+  const socialLogin = async (socialData) => {
+    const response = await api.post('/auth/social-login', socialData);
+    handleLoginSuccess(response.data);
     return response.data;
   };
 
