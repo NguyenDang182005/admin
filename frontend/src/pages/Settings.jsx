@@ -51,7 +51,7 @@ const Settings = () => {
       <Grid container spacing={3}>
         {/* Logo Management */}
         <Grid item xs={12} md={5}>
-          <Card title="🖼️ Logo trang web" bordered={false} style={{ borderRadius: 12, border: '1px solid #f0f0f0' }}>
+          <Card title="🖼️ Logo trang web" bordered={false} style={{ borderRadius: 8, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', border: '1px solid #e5e7eb' }}>
             <Box mb={3} display="flex" alignItems="center" justifyContent="center"
               sx={{ background: '#f9fafb', borderRadius: 2, p: 3, minHeight: 100, border: '2px dashed #e5e7eb' }}>
               {loading ? <Skeleton variant="rectangular" width={200} height={60} /> : (
@@ -73,7 +73,7 @@ const Settings = () => {
 
         {/* General Settings */}
         <Grid item xs={12} md={7}>
-          <Card title="🏷️ Thông tin chung" bordered={false} style={{ borderRadius: 12, border: '1px solid #f0f0f0' }}>
+          <Card title="🏷️ Thông tin chung" bordered={false} style={{ borderRadius: 8, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', border: '1px solid #e5e7eb' }}>
             <Form layout="vertical">
               <Form.Item label="Tên trang web" name="site_name">
                 <Input defaultValue="Booking Admin Panel" size="large" />

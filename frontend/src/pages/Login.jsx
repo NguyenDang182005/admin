@@ -34,13 +34,13 @@ export default function Login() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: '#f0f2f5',
+      background: '#f2f2f2',
       padding: '20px'
     }}>
-      <Card style={{ width: 400, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+      <Card style={{ width: 400, borderRadius: 8, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', border: '1px solid #e5e7eb' }}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <Title level={3} style={{ marginBottom: 8 }}>Admin Login</Title>
-          <p style={{ color: '#8c8c8c' }}>Booking Admin Panel</p>
+          <Title level={3} style={{ marginBottom: 8, color: '#003580' }}>Dashboard Quản trị</Title>
+          <p style={{ color: '#5b616e' }}>Booking.com Admin Panel</p>
         </div>
 
         <Form
@@ -81,7 +81,7 @@ export default function Login() {
         </Form>
 
         <div style={{ textAlign: 'center', marginTop: 16 }}>
-          <a href="/">Back to Home</a>
+          <a href="/" style={{ color: '#006ce4', fontWeight: 600 }}>← Trở về trang chủ Booking</a>
         </div>
       </Card>
     </div>

@@ -4,7 +4,7 @@ import { Card, CardContent, Typography, Box } from '@mui/material';
 const StatCard = ({ title, value, icon, color = '#6366f1', subtitle }) => {
   return (
     <Card elevation={0} sx={{
-      borderRadius: 3,
+      borderRadius: '12px',
       border: '1px solid #f0f0f0',
       transition: 'box-shadow 0.2s',
       '&:hover': { boxShadow: '0 8px 32px rgba(0,0,0,0.10)' }

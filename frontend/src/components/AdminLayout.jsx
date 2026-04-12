@@ -61,8 +61,8 @@ const AdminLayout = ({ children }) => {
         collapsed={collapsed}
         onCollapse={setCollapsed}
         theme="dark"
-        width={230}
-        style={{ position: 'fixed', left: 0, top: 0, bottom: 0, zIndex: 100 }}
+        width={250}
+        style={{ position: 'fixed', left: 0, top: 0, bottom: 0, zIndex: 100, background: '#003580' }}
       >
         <div style={{
           height: 64,
@@ -84,11 +84,11 @@ const AdminLayout = ({ children }) => {
           selectedKeys={[location.pathname]}
           items={menuItems}
           onClick={({ key }) => navigate(key)}
-          style={{ marginTop: 8 }}
+          style={{ marginTop: 8, background: '#003580' }}
         />
       </Sider>
 
-      <Layout style={{ marginLeft: collapsed ? 80 : 230, transition: 'margin-left 0.2s' }}>
+      <Layout style={{ marginLeft: collapsed ? 80 : 250, transition: 'margin-left 0.2s', background: 'transparent' }}>
         <Header style={{
           position: 'sticky', top: 0, zIndex: 99,
           background: '#fff',

@@ -107,7 +107,7 @@ const Dashboard = () => {
             title="Đã xác nhận"
             value={overview?.bookingsByStatus?.CONFIRMED ?? 0}
             icon="✅"
-            color="#f59e0b"
+            color="#008234"
             subtitle="Đang chờ thực hiện"
           />
         </Grid>
@@ -116,29 +116,29 @@ const Dashboard = () => {
       {/* Charts */}
       <Grid container spacing={3}>
         <Grid item xs={12} md={5}>
-          <Box sx={{ background: '#fff', borderRadius: 3, p: 3, border: '1px solid #f0f0f0' }}>
-            <Typography variant="subtitle1" fontWeight={600} mb={2}>Doanh thu theo loại dịch vụ</Typography>
+          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
+            <Typography variant="subtitle1" fontWeight={700} mb={2}>Doanh thu theo dịch vụ</Typography>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
-                <Pie data={revenueData} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}>
+                <Pie data={revenueData} cx="50%" cy="45%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}>
                   {revenueData.map((_, index) => (
                     <Cell key={index} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip formatter={(val) => formatVND(val)} />
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: '13px', paddingTop: '20px' }} />
               </PieChart>
             </ResponsiveContainer>
           </Box>
         </Grid>
 
         <Grid item xs={12} md={7}>
-          <Box sx={{ background: '#fff', borderRadius: 3, p: 3, border: '1px solid #f0f0f0' }}>
-            <Typography variant="subtitle1" fontWeight={600} mb={2}>Trạng thái đặt chỗ</Typography>
+          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
+            <Typography variant="subtitle1" fontWeight={700} mb={2}>Trạng thái đặt chỗ</Typography>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={statusData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+              <BarChart data={statusData} margin={{ top: 5, right: 30, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip />
                 <Bar dataKey="value" name="Số lượng" radius={[4, 4, 0, 0]}>
@@ -152,13 +152,13 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={12}>
-          <Box sx={{ background: '#fff', borderRadius: 3, p: 3, border: '1px solid #f0f0f0' }}>
-            <Typography variant="subtitle1" fontWeight={600} mb={2}>📈 Xu hướng doanh thu (7 ngày qua)</Typography>
+          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
+            <Typography variant="subtitle1" fontWeight={700} mb={2}>📈 Xu hướng doanh thu (7 ngày qua)</Typography>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={revenueTrend} margin={{ top: 10, right: 30, left: 20, bottom: 5 }}>
+              <LineChart data={revenueTrend} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="date" tickFormatter={(str) => str.split('-').slice(1).reverse().join('/')} tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} tickFormatter={(val) => val >= 1000000 ? `${val/1000000}M` : val} />
+                <XAxis dataKey="date" tickFormatter={(str) => str.split('-').slice(1).reverse().join('/')} tick={{ fontSize: 11 }} />
+                <YAxis width={40} tick={{ fontSize: 11 }} tickFormatter={(val) => val >= 1000000 ? `${val/1000000}M` : val} />
                 <Tooltip formatter={(val) => formatVND(val)} />
                 <Line type="monotone" dataKey="revenue" name="Doanh thu" stroke="#6366f1" strokeWidth={3} dot={{ r: 4, strokeWidth: 2, fill: '#fff' }} activeDot={{ r: 6 }} />
               </LineChart>
@@ -167,13 +167,13 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={4}>
-          <Box sx={{ background: '#fff', borderRadius: 3, p: 3, border: '1px solid #f0f0f0' }}>
-            <Typography variant="subtitle2" fontWeight={600} mb={2}>🎫 Xu hướng đặt chỗ</Typography>
+          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
+            <Typography variant="subtitle2" fontWeight={700} mb={2}>🎫 Xu hướng đặt chỗ</Typography>
             <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={bookingsTrend}>
+              <LineChart data={bookingsTrend} margin={{ top: 5, right: 10, left: -25, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="date" tickFormatter={(str) => str.split('-')[2]} tick={{ fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 10 }} />
+                <XAxis dataKey="date" tickFormatter={(str) => str.split('-')[2]} tick={{ fontSize: 11 }} />
+                <YAxis width={40} tick={{ fontSize: 11 }} />
                 <Tooltip />
                 <Line type="step" dataKey="count" name="Số đơn" stroke="#8b5cf6" strokeWidth={2} dot={false} />
               </LineChart>
@@ -182,13 +182,13 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={4}>
-          <Box sx={{ background: '#fff', borderRadius: 3, p: 3, border: '1px solid #f0f0f0' }}>
-            <Typography variant="subtitle2" fontWeight={600} mb={2}>✅ Đơn thành công</Typography>
+          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
+            <Typography variant="subtitle2" fontWeight={700} mb={2}>✅ Đơn thành công</Typography>
             <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={confirmedTrend}>
+              <LineChart data={confirmedTrend} margin={{ top: 5, right: 10, left: -25, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="date" tickFormatter={(str) => str.split('-')[2]} tick={{ fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 10 }} />
+                <XAxis dataKey="date" tickFormatter={(str) => str.split('-')[2]} tick={{ fontSize: 11 }} />
+                <YAxis width={40} tick={{ fontSize: 11 }} />
                 <Tooltip />
                 <Line type="monotone" dataKey="count" name="Số đơn" stroke="#10b981" strokeWidth={2} dot={false} />
               </LineChart>
@@ -197,13 +197,13 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={4}>
-          <Box sx={{ background: '#fff', borderRadius: 3, p: 3, border: '1px solid #f0f0f0' }}>
-            <Typography variant="subtitle2" fontWeight={600} mb={2}>👥 Người dùng mới</Typography>
+          <Box sx={{ background: '#fff', borderRadius: '12px', p: 3, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }}>
+            <Typography variant="subtitle2" fontWeight={700} mb={2}>👥 Người dùng mới</Typography>
             <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={usersTrend}>
+              <LineChart data={usersTrend} margin={{ top: 5, right: 10, left: -25, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="date" tickFormatter={(str) => str.split('-')[2]} tick={{ fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 10 }} />
+                <XAxis dataKey="date" tickFormatter={(str) => str.split('-')[2]} tick={{ fontSize: 11 }} />
+                <YAxis width={40} tick={{ fontSize: 11 }} />
                 <Tooltip />
                 <Line type="monotone" dataKey="count" name="Số người" stroke="#06b6d4" strokeWidth={2} dot={false} />
               </LineChart>

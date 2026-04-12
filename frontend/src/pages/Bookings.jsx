@@ -151,7 +151,7 @@ export default function Bookings() {
 
   return (
     <div>
-      <Card>
+      <Card style={{ borderRadius: 8, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', border: '1px solid #e5e7eb' }}>
         <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
           <Title level={4} style={{ margin: 0 }}>Quản lý đặt chỗ</Title>
           <Space>

@@ -36,6 +36,11 @@ const IMAGE_KEYS = [
   { value: 'img.home.featured2', label: 'Trang chủ - Điểm đến nổi bật 2' },
   { value: 'img.home.featured3', label: 'Trang chủ - Điểm đến nổi bật 3' },
   { value: 'img.home.featured4', label: 'Trang chủ - Điểm đến nổi bật 4' },
+  { value: 'img.flights.hero', label: 'Trang Vé Máy Bay - Ảnh nền' },
+  { value: 'img.flighthotel.hero', label: 'Trang Chuyến bay + KS - Ảnh nền' },
+  { value: 'img.carrentals.hero', label: 'Trang Thuê ô tô - Ảnh nền' },
+  { value: 'img.attractions.hero', label: 'Trang Địa điểm tham quan - Ảnh nền' },
+  { value: 'img.taxis.hero', label: 'Trang Taxi sân bay - Ảnh nền' },
 ];
 
 const Gallery = () => {
@@ -191,38 +196,35 @@ const Gallery = () => {
           variant="contained" 
           startIcon={<CloudUploadIcon />}
           onClick={() => setUploadOpen(true)}
-          sx={{ backgroundColor: '#6366f1', '&:hover': { backgroundColor: '#4f46e5' } }}
+          sx={{ backgroundColor: '#006ce4', '&:hover': { backgroundColor: '#003580' }, textTransform: 'none', borderRadius: '12px', fontWeight: 600 }}
         >
           Tải ảnh lên
         </Button>
       </Box>
 
       {/* Search & Filter Bar */}
-      <Card sx={{ mb: 3, p: 2 }}>
+      <Card sx={{ mb: 3, p: 2, borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', border: '1px solid #e5e7eb' }}>
         <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
-          <TextField
+          <Input
             placeholder="Tìm kiếm ảnh..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            size="small"
-            sx={{ minWidth: 250 }}
-            InputProps={{
-              startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment>,
-            }}
+            prefix={<SearchIcon sx={{ color: '#9ca3af', fontSize: 20 }} />}
+            style={{ width: 300, borderRadius: 12 }}
+            allowClear
           />
-          <FormControl size="small" sx={{ minWidth: 150 }}>
-            <InputLabel>Lọc theo danh mục</InputLabel>
-            <Select
-              value={filterCategory}
-              label="Lọc theo danh mục"
-              onChange={(e) => setFilterCategory(e.target.value)}
-            >
-              <MenuItem value="">Tất cả</MenuItem>
-              {IMAGE_CATEGORIES.map(cat => (
-                <MenuItem key={cat.value} value={cat.value}>{cat.label}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <AntSelect
+            placeholder="Lọc theo danh mục"
+            value={filterCategory || undefined}
+            onChange={(value) => setFilterCategory(value || '')}
+            style={{ width: 180 }}
+            allowClear
+          >
+            <AntSelect.Option value="">Tất cả danh mục</AntSelect.Option>
+            {IMAGE_CATEGORIES.map(cat => (
+              <AntSelect.Option key={cat.value} value={cat.value}>{cat.label}</AntSelect.Option>
+            ))}
+          </AntSelect>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', ml: 'auto' }}>
             <Tabs value={viewMode} onChange={(e, v) => setViewMode(v)}>
               <Tab icon={<CollectionsIcon />} iconPosition="start" label="Lưới" />
