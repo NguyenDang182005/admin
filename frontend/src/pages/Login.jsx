@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Form, Input, Button, Card, message, Typography, Space } from 'antd';
 import { UserOutlined, LockOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
-import SocialButtons from '../components/SocialButtons';
-
 const { Title, Text } = Typography;
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, socialLogin } = useAuth();
+  const { login } = useAuth();
   
   const NAVY = '#003580';
   const BLUE = '#006ce4';
@@ -20,27 +19,15 @@ export default function Login() {
 
   const onFinish = async (values) => {
     setLoading(true);
+    setErrorMsg('');
     try {
       await login(values.email, values.password);
       message.success('Đăng nhập thành công!');
       navigate(from, { replace: true });
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 'Email hoặc mật khẩu không chính xác.';
-      message.error(errorMsg);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSocialSuccess = async (provider, token, email, name) => {
-    setLoading(true);
-    try {
-      await socialLogin({ provider, token, email, name });
-      message.success(`Chào mừng ${name}! Đăng nhập thành công.`);
-      navigate(from, { replace: true });
-    } catch (error) {
-      const errorMsg = error.response?.data?.message || `Lỗi đăng nhập ${provider}.`;
-      message.error(errorMsg);
+      const msg = error.response?.data?.message || 'Email hoặc mật khẩu không chính xác. Vui lòng thử lại.';
+      setErrorMsg(msg);
+      message.error(msg);
     } finally {
       setLoading(false);
     }
@@ -127,13 +114,24 @@ export default function Login() {
             </Form.Item>
           </Form>
 
-          <SocialButtons onAuthSuccess={handleSocialSuccess} loading={loading} />
+          {errorMsg && (
+            <div className="flex items-start gap-2.5 mt-4 p-3.5 rounded-xl bg-red-50 border border-red-200">
+              <i className="fa-solid fa-circle-exclamation text-red-500 mt-0.5 shrink-0"></i>
+              <div>
+                <p className="text-sm font-bold text-red-700 leading-tight">Không thể đăng nhập</p>
+                <p className="text-sm text-red-600 mt-0.5">{errorMsg}</p>
+              </div>
+            </div>
+          )}
 
           <div style={{ textAlign: 'center', marginTop: 32 }}>
-            <Link to="/" className="text-gray-400 hover:text-blue-600 transition-colors flex items-center justify-center gap-2 font-medium">
+            <a
+              href="http://localhost:5173"
+              className="text-gray-400 hover:text-blue-600 transition-colors flex items-center justify-center gap-2 font-medium"
+            >
               <ArrowLeftOutlined style={{ fontSize: 12 }} />
-              Quay lại Trang chủ
-            </Link>
+              Quay lại trang Demo
+            </a>
           </div>
         </Card>
         

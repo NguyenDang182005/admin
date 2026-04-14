@@ -56,8 +56,11 @@ export default function Bookings() {
   };
 
   useEffect(() => {
-    fetchBookings();
-  }, [filters.status]);
+    const delayDebounceFn = setTimeout(() => {
+      fetchBookings();
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [filters.status, filters.search]);
 
   const handleTableChange = (pag) => {
     fetchBookings(pag.current, pag.pageSize);

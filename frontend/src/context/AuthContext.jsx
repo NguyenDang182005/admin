@@ -59,12 +59,6 @@ export function AuthProvider({ children }) {
     return response.data;
   };
 
-  const socialLogin = async (socialData) => {
-    const response = await api.post('/auth/social-login', socialData);
-    handleLoginSuccess(response.data);
-    return response.data;
-  };
-
   const logout = () => {
     localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_user');

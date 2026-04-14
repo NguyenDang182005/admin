@@ -53,8 +53,11 @@ export default function Users() {
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, [filters.role]);
+    const delayDebounceFn = setTimeout(() => {
+      fetchUsers();
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [filters.role, filters.search]);
 
   const handleTableChange = (pag) => {
     fetchUsers(pag.current, pag.pageSize);
