@@ -14,6 +14,7 @@ import {
   ClockCircleOutlined,
   CheckCircleOutlined,
   ExclamationCircleOutlined,
+  ControlOutlined
 } from '@ant-design/icons';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -25,6 +26,7 @@ const { Text, Title } = Typography;
 const menuItems = [
   { key: '/', icon: <DashboardOutlined />, label: 'Dashboard' },
   { key: '/bookings', icon: <CalendarOutlined />, label: 'Quản lý đặt chỗ' },
+  { key: '/data', icon: <ControlOutlined />, label: 'Quản lý dữ liệu động' },
   { key: '/users', icon: <TeamOutlined />, label: 'Quản lý người dùng' },
   { key: '/gallery', icon: <PictureOutlined />, label: 'Thư viện ảnh' },
   { key: '/settings', icon: <SettingOutlined />, label: 'Cấu hình hệ thống' },

@@ -34,3 +34,16 @@ INSERT IGNORE INTO galleries (url, title) VALUES
 ('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400', 'Deluxe Room'),
 ('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400', 'Hotel Exterior'),
 ('https://images.unsplash.com/photo-1551882547-ff43c63faf76?w=400', 'Dining Area');
+
+-- =============================================
+-- Bảng Dynamic Prices: Quy tắc giá động
+-- =============================================
+CREATE TABLE IF NOT EXISTS dynamic_prices (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    service_type VARCHAR(50) NOT NULL COMMENT 'ROOM, FLIGHT, CAR, ATTRACTION, TAXI',
+    service_id BIGINT NOT NULL COMMENT 'ID của dịch vụ gốc',
+    target_date DATE NOT NULL COMMENT 'Ngày áp dụng giá động',
+    dynamic_price DECIMAL(15,2) NULL COMMENT 'Giá ghi đè (cố định)',
+    multiplier DECIMAL(5,2) NULL COMMENT 'Hệ số nhân giá gốc',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

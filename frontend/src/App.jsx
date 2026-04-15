@@ -9,6 +9,7 @@ import Gallery from './pages/Gallery';
 import Settings from './pages/Settings';
 import Bookings from './pages/Bookings';
 import Users from './pages/Users';
+import DataManagement from './pages/DataManagement';
 import { ConfigProvider } from 'antd';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
@@ -103,6 +104,13 @@ const App = () => {
                 <ProtectedRoute>
                   <AdminLayout>
                     <Users />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+              <Route path="/data" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <DataManagement />
                   </AdminLayout>
                 </ProtectedRoute>
               } />

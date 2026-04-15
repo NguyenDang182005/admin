@@ -90,4 +90,22 @@ export const authAPI = {
   me: () => api.get('/auth/me'),
 };
 
+export const dynamicPriceAPI = {
+  getAll: () => api.get('/dynamic-prices'),
+  getById: (id) => api.get(`/dynamic-prices/${id}`),
+  create: (data) => api.post('/dynamic-prices', data),
+  update: (id, data) => api.put(`/dynamic-prices/${id}`, data),
+  delete: (id) => api.delete(`/dynamic-prices/${id}`),
+};
+
+export const systemAPI = {
+  shiftData: (days = 1) => api.post(`/system/shift-data?days=${days}`),
+};
+
+export const dataExplorerAPI = {
+  getTables: () => api.get('/data-explorer/tables'),
+  query: (table, page = 0, size = 20, sortBy = 'id', sortDir = 'DESC') =>
+    api.get(`/data-explorer/query?table=${table}&page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`),
+};
+
 export default api;
